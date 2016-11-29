@@ -40,14 +40,15 @@ read = ['53736314', '53820075', '49679682', '54247257', '54133946', '54215540', 
         '54253595', '52789688', '54212125', '44666006', '54104235', '54230976', '53921911', '54210529', '54179126', '54066088', '54244314', '54172882', '54045868', '54254913', '54183624', '52734461', '53537499', '54349507', '54232064', '54028840', '51413354', '54344452', '53601279', '54362398', '54347314', '54374781', '54217136', '54320295', '51485411', '54348569', '53693203', '53942919', '53293294', '49975988', '54198595', '54331036', '54142679', '54377238', '54358385', '54353133', '54264136', '53828889', '53774967', '54132798', '54312625', '54356707', '54094116', '54291752', '40646666', '53753553', '53214428', '54361668', '54109147', '54354950', '54093413', '54102002', '54372384', '53949719', '54004090', '41209073', '54340357', '54305519', '54317845', '52886352', '54376063', '53943453', '54366296', '54375945', '54342053', '54367574', '53161510', '53646395', '54367058', '54361349', '54147651', '54389249', '54389232', '54387899', '54389124', '49892688', '54383443', '54389037', '52848523', '54138545', '54141496', '54381972', '54157839', '54339281', '54356311', '54385455', '54382427', '54293412', '54312444', '54349445', '54348953', '54305305', '54051507', '54348679', '51030260', '54368546', '50540370', '54270487', '53775268', '54350735', '54010668', '54078971', '54384889', '54353152', '54348461', '54062165', '33892508', '54385970', '54291465', '52872880', '53396867', '54213514', '53820129', '53681872', '53946548', '54016294', '54300485', '54191586', '53828526', '54384493', '54382695', '53256311', '54332149', '52707624', '54389654', '54294229', '53828939', '54389475', '54281725', '54303533', '54389402', '54389399', '54385957', '53976761', '54027367', '54273379', '54236975']
 
 
-book = openpyxl.load_workbook("/Users/ryu/Documents/rent.xlsx")
-sh = book.get_sheet_by_name(book.get_sheet_names()[0])
+wb = openpyxl.load_workbook("/Users/ryu/Documents/rent.xlsx")
+# with openpyxl.load_workbook("/Users/ryu/Documents/rent.xlsx") as book:
+sh = wb.get_sheet_by_name(wb.get_sheet_names()[0])
 for i in sh.rows:
     if i[2].value != 'id':
         read.append(str(i[2].value))
 
     # 如果被标记为黑名单
-    if i[4].value == 'b':
+    if i[3].value == 'b':
         # print str(sh.cell_value(r,2)) +'nn'+ str(r+1) z
         # print sh.cell_value(r,1)
         print i[1].value, 'is black'
@@ -63,7 +64,7 @@ groups = {'上海租房': 'https://www.douban.com/group/shanghaizufang/discussio
           '上海租房@长宁淞虹路、北新泾': 'https://www.douban.com/group/CNZF/discussion?start='
           }
 
-wb = openpyxl.load_workbook("/Users/ryu/Documents/rent.xlsx")
+# wb = openpyxl.load_workbook("/Users/ryu/Documents/rent.xlsx")
 sheetname = wb.get_sheet_names()[0]
 ws = wb[sheetname]
 
@@ -176,15 +177,15 @@ def crwalmain(url):
                 merge = ''.join(reset)
                 # print u'提取出来的特殊符号：\n' + merge
 
-                pattern = re.compile(ur'中介|微信|看房|业主|大三房|首次出租|得房率|拎包入住|紧邻地铁|好房1间|两房|黄金楼层|客户|直租|温馨|首选')
+                pattern = re.compile(ur'中介|微信|看房|业主|大三房|首次出租|得房率|拎包入住|紧邻地铁|好房1间|两房|黄金楼层|客户|直租|温馨|首选|精装|诚意出租|全配')
                 a = pattern.findall(title.decode('utf-8'))
 
                 if len(a) > 0:
                     print 'zhongjie a@@@@@@@@@@\n\n' + title
                     blacklist.append(name)
                 else:
-                    eachrow = [title, name, id[0], groupnamethis,
-                               length2, merge]
+                    eachrow = [title, name, id[0], 
+                               length2, groupnamethis,merge]
                     # ws.append(eachrow)
                     print 'writing', title, '\n'
                     eachurl.append(eachrow)
@@ -203,7 +204,7 @@ for groupname in groups:
     num = 0
     named = []
 
-    while num < 250:
+    while num < 250:  #250
         # while num<25:
 
         # url='https://www.douban.com/group/shanghaizufang/discussion?start=%s'%num
@@ -237,5 +238,5 @@ for i2 in result:
             ws.append(i)
             count += 1
 
-wb.save("/Users/ryu/Documents/rent1104.xlsx")
+wb.save("/Users/ryu/Documents/rent.xlsx")
 print 'done with %s new iteams!' % count
